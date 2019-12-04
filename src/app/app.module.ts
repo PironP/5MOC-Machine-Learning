@@ -3,11 +3,13 @@ import { NgModule } from '@angular/core';
 
 
 import { AppComponent } from './app.component';
+import { ChifoumiComponent } from './chifoumi/chifoumi.component';
 
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    ChifoumiComponent
   ],
   imports: [
     BrowserModule
