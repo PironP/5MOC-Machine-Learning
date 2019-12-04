@@ -13,7 +13,7 @@ export class ChifoumiComponent implements OnInit {
   techableURL: String = 'https://teachablemachine.withgoogle.com/models/Db6Q6aVW/';
 
   model;
-  webcam;
+  webcam: tmImage.Webcam;
   labelContainer;
   maxPredictions;
 
@@ -40,7 +40,7 @@ export class ChifoumiComponent implements OnInit {
     this.webcam = new tmImage.Webcam(200, 200, flip); // width, height, flip
     await this.webcam.setup(); // request access to the webcam
     await this.webcam.play();
-    window.requestAnimationFrame(this.loop);
+    window.requestAnimationFrame(this.loop.bind(this));
 
     // append elements to the DOM
     document.getElementById('webcam-container').appendChild(this.webcam.canvas);
@@ -54,7 +54,7 @@ export class ChifoumiComponent implements OnInit {
   async loop() {
     this.webcam.update(); // update the webcam frame
     await this.predict();
-    window.requestAnimationFrame(this.loop);
+    window.requestAnimationFrame(this.loop.bind(this));
   }
 
   // run the webcam image through the image model
