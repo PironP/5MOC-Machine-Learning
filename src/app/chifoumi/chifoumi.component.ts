@@ -15,7 +15,9 @@ export class ChifoumiComponent implements OnInit {
   model;
   webcam: tmImage.Webcam;
   labelContainer;
+  predictContainer;
   maxPredictions;
+  predictedClassName = '';
 
 
   constructor() { }
@@ -66,6 +68,14 @@ export class ChifoumiComponent implements OnInit {
             prediction[i].className + ': ' + prediction[i].probability.toFixed(2);
             this.labelContainer.childNodes[i].innerHTML = classPrediction;
     }
-}
+
+    let predictedValue = 0;
+    prediction.forEach(x => {
+      if (x.probability > predictedValue) {
+        this.predictedClassName = x.className;
+        predictedValue = x.probability;
+      }
+    });
+  }
 
 }

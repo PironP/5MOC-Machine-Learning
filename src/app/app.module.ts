@@ -9,7 +9,7 @@ import { ChifoumiComponent } from './chifoumi/chifoumi.component';
 @NgModule({
   declarations: [
     AppComponent,
-    ChifoumiComponent
+    ChifoumiComponent,
   ],
   imports: [
     BrowserModule
