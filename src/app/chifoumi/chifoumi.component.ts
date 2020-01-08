@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import * as tf from '@tensorflow/tfjs';
 import * as tmImage from '@teachablemachine/image';
 
 @Component({
@@ -10,7 +9,7 @@ import * as tmImage from '@teachablemachine/image';
 export class ChifoumiComponent implements OnInit {
 
   // the link to your model provided by Teachable Machine export panel
-  techableURL: String = 'https://teachablemachine.withgoogle.com/models/Db6Q6aVW/';
+  techableURL = 'https://teachablemachine.withgoogle.com/models/Db6Q6aVW/';
 
   model;
   webcam: tmImage.Webcam;
@@ -18,7 +17,6 @@ export class ChifoumiComponent implements OnInit {
   predictContainer;
   maxPredictions;
   predictedClassName = '';
-
 
   constructor() { }
 
@@ -66,7 +64,7 @@ export class ChifoumiComponent implements OnInit {
     for (let i = 0; i < this.maxPredictions; i++) {
         const classPrediction =
             prediction[i].className + ': ' + prediction[i].probability.toFixed(2);
-            this.labelContainer.childNodes[i].innerHTML = classPrediction;
+        this.labelContainer.childNodes[i].innerHTML = classPrediction;
     }
 
     let predictedValue = 0;

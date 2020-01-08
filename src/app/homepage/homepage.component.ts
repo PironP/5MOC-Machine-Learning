@@ -20,5 +20,4 @@ export class HomepageComponent implements OnInit {
   public help() {
     this.router.navigateByUrl('/help');
   }
-
 }
