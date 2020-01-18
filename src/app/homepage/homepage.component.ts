@@ -14,7 +14,7 @@ export class HomepageComponent implements OnInit {
   }
 
   public play() {
-    this.router.navigateByUrl('/game');
+    this.router.navigateByUrl('/search');
   }
 
   public help() {

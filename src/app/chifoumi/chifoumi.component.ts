@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import * as tmImage from '@teachablemachine/image';
+import { SocketService } from '../services/socket.service';
+import { Socket } from 'ngx-socket-io';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-chifoumi',
@@ -12,15 +15,81 @@ export class ChifoumiComponent implements OnInit {
   techableURL = 'https://teachablemachine.withgoogle.com/models/Db6Q6aVW/';
 
   model;
-  webcam: tmImage.Webcam;
+  webcam: tmImage.Webcam = new tmImage.Webcam(200, 200, true);
   labelContainer;
   predictContainer;
   maxPredictions;
   predictedClassName = '';
+  selectedMove = 'Vide';
 
-  constructor() { }
+  playerScore = 0;
+  opponentScore = 0;
+  timer = 5;
+  loading = true;
+  waitingServer = false;
+  showRoundResult = false;
+  roundResult = '';
+  interval: any;
+
+  constructor(
+    private socketService: SocketService,
+    private socket: Socket,
+    private router: Router) { }
 
   ngOnInit() {
+    this.init();
+    this.waitInit();
+  }
+
+  waitInit() {
+    setTimeout(() => {
+      if (this.webcam.webcam) {
+        this.startRound();
+        this.loading = false;
+      } else {
+        this.waitInit();
+      }
+    }, 1000);
+  }
+
+  startRound() {
+    this.timer = 5;
+    this.interval = setInterval(() => {
+      this.timer -= 1;
+      if (this.timer === 0) {
+        clearInterval(this.interval);
+        this.endTurn();
+      }
+    }, 1000);
+  }
+
+  endTurn() {
+    this.socketService.sendMove(this.selectedMove);
+    this.waitingServer = true;
+    this.selectedMove = 'Vide';
+    console.log('round ended');
+    this.socket.on('endRound', (result: string) => {
+      console.log(`Result: ${result}`);
+      this.roundResult = result.toLocaleUpperCase();
+      if (result === 'win') {
+        this.playerScore++;
+      } else if (result === 'loose') {
+        this.opponentScore++;
+      }
+      this.waitingServer = false;
+      if (this.playerScore >= 2 || this.opponentScore >= 2) {
+        return;
+      }
+      this.displayResult();
+    });
+  }
+
+  displayResult() {
+    this.showRoundResult = true;
+    setTimeout(() => {
+      this.showRoundResult = false;
+      this.startRound();
+    }, 5000);
   }
 
   // Load the image model and setup the webcam
@@ -36,18 +105,14 @@ export class ChifoumiComponent implements OnInit {
     this.maxPredictions = this.model.getTotalClasses();
 
     // Convenience function to setup a webcam
-    const flip = true; // whether to flip the webcam
-    this.webcam = new tmImage.Webcam(200, 200, flip); // width, height, flip
+    // const flip = true; // whether to flip the webcam
+    // this.webcam = new tmImage.Webcam(200, 200, flip); // width, height, flip
     await this.webcam.setup(); // request access to the webcam
     await this.webcam.play();
     window.requestAnimationFrame(this.loop.bind(this));
 
     // append elements to the DOM
     document.getElementById('webcam-container').appendChild(this.webcam.canvas);
-    this.labelContainer = document.getElementById('label-container');
-    for (let i = 0; i < this.maxPredictions; i++) { // and class labels
-      this.labelContainer.appendChild(document.createElement('div'));
-    }
   }
 
 
@@ -61,19 +126,23 @@ export class ChifoumiComponent implements OnInit {
   async predict() {
       // predict can take in an image, video or canvas html element
     const prediction = await this.model.predict(this.webcam.canvas);
-    for (let i = 0; i < this.maxPredictions; i++) {
-        const classPrediction =
-            prediction[i].className + ': ' + prediction[i].probability.toFixed(2);
-        this.labelContainer.childNodes[i].innerHTML = classPrediction;
-    }
 
     let predictedValue = 0;
     prediction.forEach(x => {
       if (x.probability > predictedValue) {
         this.predictedClassName = x.className;
         predictedValue = x.probability;
+        // If not waiting info from socket and move is not empty
+        // Save the current player's move
+        if (!this.waitingServer && this.predictedClassName !== 'Vide') {
+          this.selectedMove = this.predictedClassName;
+        }
       }
     });
+  }
+
+  goHome() {
+    this.router.navigateByUrl('/home');
   }
 
 }

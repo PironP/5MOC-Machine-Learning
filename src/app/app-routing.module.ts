@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { HomepageComponent } from './homepage/homepage.component';
 import { ChifoumiComponent } from './chifoumi/chifoumi.component';
+import { GameSearchComponent } from './game-search/game-search.component';
 
 const routes: Routes = [
   {
@@ -14,7 +15,7 @@ const routes: Routes = [
   },
   {
       path: 'search',
-      component: ChifoumiComponent, // TO UPDATE
+      component: GameSearchComponent,
   },
   {
       path: 'help',
