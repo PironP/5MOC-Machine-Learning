@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import * as tmImage from '@teachablemachine/image';
 import { SocketService } from '../services/socket.service';
 import { Socket } from 'ngx-socket-io';
@@ -9,7 +9,7 @@ import { Router } from '@angular/router';
   templateUrl: './chifoumi.component.html',
   styleUrls: ['./chifoumi.component.css']
 })
-export class ChifoumiComponent implements OnInit {
+export class ChifoumiComponent implements OnInit, OnDestroy {
 
   // the link to your model provided by Teachable Machine export panel
   techableURL = 'https://teachablemachine.withgoogle.com/models/Db6Q6aVW/';
@@ -22,8 +22,8 @@ export class ChifoumiComponent implements OnInit {
   predictedClassName = '';
   selectedMove = 'Vide';
 
-  playerScore = 0;
-  opponentScore = 0;
+  playerScore: number;
+  opponentScore: number;
   timer = 5;
   loading = true;
   waitingServer = false;
@@ -37,8 +37,33 @@ export class ChifoumiComponent implements OnInit {
     private router: Router) { }
 
   ngOnInit() {
+    this.playerScore = 0;
+    this.opponentScore = 0;
     this.init();
+    this.initSocket();
     this.waitInit();
+  }
+
+  ngOnDestroy() {
+    clearInterval(this.interval);
+    this.socket.removeListener('endRound');
+  }
+
+  initSocket() {
+    this.socket.on('endRound', (result: string) => {
+      this.roundResult = result.toLocaleUpperCase();
+      if (result === 'win') {
+        this.playerScore++;
+      } else if (result === 'loose') {
+        this.opponentScore++;
+      }
+      this.waitingServer = false;
+      if (this.playerScore >= 2 || this.opponentScore >= 2) {
+        this.socketService.gameEnded();
+        return;
+      }
+      this.displayResult();
+    });
   }
 
   waitInit() {
@@ -67,21 +92,6 @@ export class ChifoumiComponent implements OnInit {
     this.socketService.sendMove(this.selectedMove);
     this.waitingServer = true;
     this.selectedMove = 'Vide';
-    console.log('round ended');
-    this.socket.on('endRound', (result: string) => {
-      console.log(`Result: ${result}`);
-      this.roundResult = result.toLocaleUpperCase();
-      if (result === 'win') {
-        this.playerScore++;
-      } else if (result === 'loose') {
-        this.opponentScore++;
-      }
-      this.waitingServer = false;
-      if (this.playerScore >= 2 || this.opponentScore >= 2) {
-        return;
-      }
-      this.displayResult();
-    });
   }
 
   displayResult() {
