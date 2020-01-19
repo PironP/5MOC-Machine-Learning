@@ -4,6 +4,7 @@ import { HomepageComponent } from './homepage/homepage.component';
 import { ChifoumiComponent } from './chifoumi/chifoumi.component';
 import { GameSearchComponent } from './game-search/game-search.component';
 import { Routeguard } from './routeguard.guard';
+import { HelpComponent } from './help/help.component'
 
 const routes: Routes = [
   {
@@ -21,7 +22,7 @@ const routes: Routes = [
   },
   {
       path: 'help',
-      component: ChifoumiComponent, // TO UPDATE
+      component: HelpComponent, 
   },
   {
       path: '**',
