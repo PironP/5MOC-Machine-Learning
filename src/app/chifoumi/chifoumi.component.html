@@ -26,8 +26,8 @@
   </ng-container>
 </ng-container>
 <ng-container *ngIf="showRoundResult">
-  <h3 *ngIf="roundResult != 'Draw'">You {{roundResult}}</h3>
-  <h3 *ngIf="roundResult == 'Draw'">Draw. No one gets a point this round</h3>
+  <h3 *ngIf="roundResult != 'DRAW'">You {{roundResult}} this round.</h3>
+  <h3 *ngIf="roundResult == 'DRAW'">Draw. No one gets a point this round</h3>
 </ng-container>
 <ng-container *ngIf="playerScore >= 2 || opponentScore >= 2">
   Game ended
