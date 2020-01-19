@@ -1,43 +1,46 @@
-<h2>Game Started</h2>
+<h2>Partie en cours</h2>
 <hr>
-<div>Score. You : {{playerScore}}    Opponent : {{opponentScore}}</div>
+<div>
+  Score: <br>
+  Vous : {{playerScore}}    Adversaires : {{opponentScore}}
+</div>
 <ng-container *ngIf="loading">
-  <h2>Please wait while we start the game</h2>
+  <h2>Attendez un moment pendant la préparation de la partie.</h2>
 </ng-container>
 <ng-container *ngIf=" playerScore < 2 && opponentScore < 2">
   <div id="webcam-container"></div>
   <ng-container *ngIf="!loading && !showRoundResult">
-    <h2>Round {{opponentScore + playerScore + 1}}</h2>
+    <h2>Manche {{opponentScore + playerScore + 1}}</h2>
     <ng-container *ngIf="selectedMove === 'Pierre'">
-      <h2>You choose ROCK</h2>
+      <h2>Vous avez choisi PIERRE</h2>
     </ng-container>
     <ng-container *ngIf="selectedMove === 'Ciseau'">
-      <h2>You choose CISCOR</h2>
+      <h2>Vous avez choisi CISEAU</h2>
     </ng-container>
     <ng-container *ngIf="selectedMove === 'Feuille'">
-      <h2>You choose PAPER</h2>
+      <h2>Vous avez choisi PAPIER</h2>
     </ng-container>
     <ng-container *ngIf="selectedMove === 'Vide'">
-      <h3>Please choose a move</h3>
+      <h3>Faites un geste</h3>
     </ng-container>
     <ng-container *ngIf="!waitingServer">
-      <h3>Hold for {{timer}} seconds</h3>
+      <h3>Maintenez pedant {{timer}} secondes</h3>
     </ng-container>
   </ng-container>
 </ng-container>
 <ng-container *ngIf="showRoundResult">
-  <h3 *ngIf="roundResult != 'DRAW'">You {{roundResult}} this round.</h3>
-  <h3 *ngIf="roundResult == 'DRAW'">Draw. No one gets a point this round</h3>
+  <h3 *ngIf="roundResult != 'EGALITE'">Vous avez {{roundResult}} cette manche</h3>
+  <h3 *ngIf="roundResult == 'EGALITE'">Egalité. Personne n'a de points pour cette manche</h3>
 </ng-container>
 <ng-container *ngIf="playerScore >= 2 || opponentScore >= 2">
-  Game ended
+  Partie terminée
   <div *ngIf="playerScore > opponentScore">
-    You Win
+    Vous avez gagné
   </div>
   <div *ngIf="opponentScore > playerScore">
-    You Loose
+    Vous avez perdu
   </div>
   <div>
-    <button (click)="goHome()">Return to home page</button>
+    <button (click)="goHome()">Revenir a l'accueil</button>
   </div>
 </ng-container>

@@ -51,7 +51,7 @@ export class ChifoumiComponent implements OnInit, OnDestroy {
 
   initSocket() {
     this.socket.on('endRound', (result: string) => {
-      this.roundResult = result.toLocaleUpperCase();
+      this.roundResult = this.translateRoundResult(result.toLocaleUpperCase());
       if (result === 'win') {
         this.playerScore++;
       } else if (result === 'loose') {
@@ -64,6 +64,13 @@ export class ChifoumiComponent implements OnInit, OnDestroy {
       }
       this.displayResult();
     });
+  }
+
+  translateRoundResult(result: string): string {
+    if (result === 'DRAW') {
+      return 'EGALITE';
+    }
+    return result === 'WIN' ? 'GAGNE' : 'PERDU';
   }
 
   waitInit() {
