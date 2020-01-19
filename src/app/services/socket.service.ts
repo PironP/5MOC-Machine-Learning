@@ -16,10 +16,18 @@ export class SocketService {
   }
 
   joinGame() {
+    if (!this.socket.ioSocket.connected) {
+      this.socket.connect();
+    }
     this.socket.emit('play');
   }
 
   sendMove(move: string) {
     this.socket.emit('choice',  move);
+  }
+
+  gameEnded() {
+    this.gameStatus = 'searching';
+    this.socket.disconnect();
   }
 }

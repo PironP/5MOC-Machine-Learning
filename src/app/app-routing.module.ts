@@ -3,15 +3,17 @@ import { Routes, RouterModule } from '@angular/router';
 import { HomepageComponent } from './homepage/homepage.component';
 import { ChifoumiComponent } from './chifoumi/chifoumi.component';
 import { GameSearchComponent } from './game-search/game-search.component';
+import { Routeguard } from './routeguard.guard';
 
 const routes: Routes = [
   {
-    path: 'home',
+    path: '',
     component: HomepageComponent,
   },
   {
       path: 'game',
       component: ChifoumiComponent,
+      canActivate: [Routeguard]
   },
   {
       path: 'search',
@@ -22,12 +24,8 @@ const routes: Routes = [
       component: ChifoumiComponent, // TO UPDATE
   },
   {
-    path: '',
-    redirectTo: 'home', pathMatch: 'full'
-  },
-  {
       path: '**',
-      redirectTo: '/home',
+      redirectTo: '/',
   },
 ];
 
